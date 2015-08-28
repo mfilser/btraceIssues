@@ -1,0 +1,50 @@
+#!/bin/bash
+
+function _die()
+{
+	echo "$@"
+	exit 1
+}
+
+function _is_file()
+{
+	test -f $1 || _die "file $1 does not exist"
+}
+
+function _is_dir()
+{
+	test -d $1 || _die "directory $1 does not exist"
+}
+
+set -eu
+
+export BTRACE_HOME="/daten/git/btrace"
+export JAVA_HOME="/usr/lib/jvm/java-7"
+
+_is_dir $BTRACE_HOME
+_is_dir $JAVA_HOME
+
+_btracec="$BTRACE_HOME/bin/btracec"
+_btrace_agent="$BTRACE_HOME/build/btrace-agent.jar"
+_btrace_client="$BTRACE_HOME/build/btrace-client.jar"
+_btrace_script_source="BTraceScript.java"
+_btrace_script_class="btrace/test/script/BTraceScript.class"
+
+_is_file $_btracec
+_is_file $_btrace_agent
+_is_file $_btrace_client
+_is_file $_btrace_script_source
+
+test -f $_btrace_script_class && rm $_btrace_script_class
+$_btracec $_btrace_script_source
+
+_is_file $_btrace_script_class
+
+_btrace_logfile="btrace/btrace.log"
+_javaagent="-javaagent:$_btrace_agent=script=$_btrace_script_class,scriptOutputFile=$_btrace_logfile"
+
+_classpath="build/classes/main:libsTest/*:$_btrace_client"
+./gradlew compileTestJava
+$JAVA_HOME/bin/java $_javaagent -classpath $_classpath btrace.test.verifyError.Main
+
+cat $_btrace_logfile

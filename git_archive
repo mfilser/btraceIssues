@@ -1,0 +1,3 @@
+#!/bin/bash
+
+git archive HEAD .classpath .project BTraceScript.java build.gradle gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.properties gradlew gradlew.bat src/main/java/btrace/test/verifyError/Main.java src/main/java/btrace/test/verifyError/Person.java src/main/java/btrace/test/verifyError/PersonA.java src/main/java/btrace/test/verifyError/PersonB.java src/main/java/btrace/test/verifyError/Persons.java src/test/java/btrace/test/verifyError/PersonTest.java test -o btrace.zip

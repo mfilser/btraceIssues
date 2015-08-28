@@ -1,2 +1,10 @@
 *.sw?
 .*.sw?
+.gradle
+.settings
+bin
+build
+btrace/*
+libs
+libsTest
+btrace.zip
